@@ -14,7 +14,22 @@
 #   about_triangle_project_2.rb
 #
 def triangle(a, b, c)
-  # WRITE THIS CODE
+  sides = [a, b, c].sort!
+  sides_string = sides.join(" ")
+  begin
+  	
+  	raise TriangleError, "Oops. Sum of side a and side b must be greater than side c" if sides[0] + sides[1] <= sides[2]
+  	raise TriangleError, "Oops. Sides must be positive integers" if sides_string.match(/-/)
+  	raise TriangleError, "Oops. Sides cannot be 0" if sides_string.match(/\A0| 0/)
+
+  	if a == b && b == c 
+    	:equilateral
+ 	elsif a != b && a != c && b != c
+    	:scalene
+  	else
+    	:isosceles
+  	end
+  end
 end
 
 # Error class used in part 2.  No need to change this code.
