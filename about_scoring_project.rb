@@ -31,6 +31,55 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 
 def score(dice)
   # You need to write this method
+  points = 0
+  triples = []        #stores triples of any number
+  non_triples = []    #stores remaining rolls
+  num_limit = 3       #allows one triple (change to 6 to allow two triples, 9 to allow three triples, etc.)
+
+  #Split into triple rolls and non-triple rolls
+  while dice.empty? == false do
+    if dice.count(dice.last) >= num_limit && (triples.empty? || dice.last == triples.last)
+      triples.push(dice.last)
+      num_limit -= 1
+      if triples.size == 3 #Triple caught
+        num_limit = 100 #Set num_limit to arbitrary large number to prevent
+                        #other rolls from being counted towards the triple
+      end
+    else
+      non_triples.push(dice.last)
+    end
+    dice.pop
+  end
+
+  #Allocate points for non-triples
+  while non_triples.empty? == false do
+    if non_triples.last == 1
+      points += 100
+    elsif non_triples.last == 5
+      points += 50
+    end
+    non_triples.pop
+  end
+
+  #Allocate points for triples
+    if triples.size == 3
+    case triples[0]
+      when 1
+        points += 1000
+      when 2..6
+        points += triples[0]*100
+      else
+        raise TriplesError, "Something messed up with the triples"
+    end
+  end
+  triples.clear
+
+  #Return total points
+  points
+
+end
+
+class TriplesError < StandardError
 end
 
 class AboutScoringProject < EdgeCase::Koan
